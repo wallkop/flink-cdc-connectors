@@ -27,6 +27,7 @@ import com.ververica.cdc.connectors.mysql.source.split.MySqlSplit;
 import io.debezium.connector.AbstractSourceInfo;
 import io.debezium.connector.base.ChangeEventQueue;
 import io.debezium.connector.mysql.GtidSet;
+import io.debezium.connector.mysql.GtidUtils;
 import io.debezium.connector.mysql.MySqlChangeEventSourceMetricsFactory;
 import io.debezium.connector.mysql.MySqlConnection;
 import io.debezium.connector.mysql.MySqlConnectorConfig;
@@ -34,7 +35,6 @@ import io.debezium.connector.mysql.MySqlDatabaseSchema;
 import io.debezium.connector.mysql.MySqlOffsetContext;
 import io.debezium.connector.mysql.MySqlStreamingChangeEventSourceMetrics;
 import io.debezium.connector.mysql.MySqlTopicSelector;
-import io.debezium.connector.mysql.GtidUtils;
 import io.debezium.data.Envelope;
 import io.debezium.pipeline.DataChangeEvent;
 import io.debezium.pipeline.ErrorHandler;
@@ -229,8 +229,10 @@ public class StatefulTaskContext {
         // GTIDs are enabled
         LOG.info("Merging server GTID set {} with restored GTID set {}", availableGtidSet, gtidStr);
 
-        // Based on the current server's GTID, the GTID in MySqlOffsetContext is adjusted to ensure the completeness of
-        // the GTID. This is done to address the issue of being unable to recover from a checkpoint in certain startup
+        // Based on the current server's GTID, the GTID in MySqlOffsetContext is adjusted to ensure
+        // the completeness of
+        // the GTID. This is done to address the issue of being unable to recover from a checkpoint
+        // in certain startup
         // modes.
         GtidSet gtidSet = GtidUtils.fixRestoredGtidSet(availableGtidSet, new GtidSet(gtidStr));
         LOG.info("Merged GTID set is {}", gtidSet);

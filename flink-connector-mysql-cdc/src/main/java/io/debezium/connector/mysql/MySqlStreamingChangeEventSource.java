@@ -1329,11 +1329,16 @@ public class MySqlStreamingChangeEventSource
             LOGGER.info(
                     "Relevant GTID set available on server: {}", relevantAvailableServerGtidSet);
 
-            // Since the GTID recorded in the checkpoint represents the CDC-executed records, in certain scenarios
-            // (such as when the startup mode is earliest/timestamp/binlogfile), the recorded GTID may not start from
-            // the beginning. For example, A:300-500. However, during job recovery, we usually only need to focus on
-            // the last consumed point instead of consuming A:1-299. Therefore, some adjustments need to be made to the
-            // recorded offset in the checkpoint, and the available GTID for other MySQL instances should be completed.
+            // Since the GTID recorded in the checkpoint represents the CDC-executed records, in
+            // certain scenarios
+            // (such as when the startup mode is earliest/timestamp/binlogfile), the recorded GTID
+            // may not start from
+            // the beginning. For example, A:300-500. However, during job recovery, we usually only
+            // need to focus on
+            // the last consumed point instead of consuming A:1-299. Therefore, some adjustments
+            // need to be made to the
+            // recorded offset in the checkpoint, and the available GTID for other MySQL instances
+            // should be completed.
             mergedGtidSet =
                     GtidUtils.fixRestoredGtidSet(
                             GtidUtils.mergeGtidSetInto(

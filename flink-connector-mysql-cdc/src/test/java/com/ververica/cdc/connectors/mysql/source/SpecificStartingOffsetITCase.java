@@ -297,10 +297,7 @@ public class SpecificStartingOffsetITCase {
 
         // Build Flink job
         StreamExecutionEnvironment env = getExecutionEnvironment();
-        MySqlSource<RowData> source =
-                getSourceBuilder()
-                        .startupOptions(startupOptions)
-                        .build();
+        MySqlSource<RowData> source = getSourceBuilder().startupOptions(startupOptions).build();
         DataStreamSource<RowData> stream =
                 env.fromSource(source, WatermarkStrategy.noWatermarks(), "timestamp-offset-test");
         CollectResultIterator<RowData> iterator = addCollector(env, stream);
@@ -342,7 +339,8 @@ public class SpecificStartingOffsetITCase {
         List<String> rowsAfterRestored = fetchRowData(iterator, 2, customers::stringify);
         assertThat(rowsAfterRestored)
                 .containsExactly(
-                        "-U[18213, Charlie, Paris, 123456987]", "+U[18213, George, Paris, 123456987]");
+                        "-U[18213, Charlie, Paris, 123456987]",
+                        "+U[18213, George, Paris, 123456987]");
 
         restoredJobClient.cancel();
     }

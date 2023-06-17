@@ -25,12 +25,12 @@ import java.util.Map;
 public class GtidUtils {
 
     /**
-     * This method corrects the GTID set that has been restored from a state or checkpoint using
-     * the GTID set fetched from the server via SHOW MASTER STATUS.
-     * During the correction process, the restored GTID set is adjusted according to the server's GTID set
-     * to ensure it does not exceed the latter. For each UUID in the restored GTID set, if it exists
-     * in the server's GTID set, then it will be adjusted according to the server's GTID set;
-     * if it does not exist in the server's GTID set, it will be directly added to the new GTID set.
+     * This method corrects the GTID set that has been restored from a state or checkpoint using the
+     * GTID set fetched from the server via SHOW MASTER STATUS. During the correction process, the
+     * restored GTID set is adjusted according to the server's GTID set to ensure it does not exceed
+     * the latter. For each UUID in the restored GTID set, if it exists in the server's GTID set,
+     * then it will be adjusted according to the server's GTID set; if it does not exist in the
+     * server's GTID set, it will be directly added to the new GTID set.
      */
     public static GtidSet fixRestoredGtidSet(GtidSet serverGtidSet, GtidSet restoredGtidSet) {
         Map<String, GtidSet.UUIDSet> newSet = new HashMap<>();
@@ -66,8 +66,8 @@ public class GtidUtils {
     }
 
     /**
-     * This method merges one GTID set (toMerge) into another (base), without overwriting the existing elements
-     * in the base GTID set.
+     * This method merges one GTID set (toMerge) into another (base), without overwriting the
+     * existing elements in the base GTID set.
      */
     public static GtidSet mergeGtidSetInto(GtidSet base, GtidSet toMerge) {
         Map<String, GtidSet.UUIDSet> newSet = new HashMap<>();

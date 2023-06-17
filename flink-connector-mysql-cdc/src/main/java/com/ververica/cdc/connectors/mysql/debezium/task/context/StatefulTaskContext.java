@@ -34,6 +34,7 @@ import io.debezium.connector.mysql.MySqlDatabaseSchema;
 import io.debezium.connector.mysql.MySqlOffsetContext;
 import io.debezium.connector.mysql.MySqlStreamingChangeEventSourceMetrics;
 import io.debezium.connector.mysql.MySqlTopicSelector;
+import io.debezium.connector.mysql.GtidUtils;
 import io.debezium.data.Envelope;
 import io.debezium.pipeline.DataChangeEvent;
 import io.debezium.pipeline.ErrorHandler;
@@ -221,10 +222,19 @@ public class StatefulTaskContext {
                     "Connector used GTIDs previously, but MySQL does not know of any GTIDs or they are not enabled");
             return false;
         }
-        // GTIDs are enabled
-        GtidSet gtidSet = new GtidSet(gtidStr);
+
         // Get the GTID set that is available in the server ...
         GtidSet availableGtidSet = new GtidSet(availableGtidStr);
+
+        // GTIDs are enabled
+        LOG.info("Merging server GTID set {} with restored GTID set {}", availableGtidSet, gtidStr);
+
+        // Based on the current server's GTID, the GTID in MySqlOffsetContext is adjusted to ensure the completeness of
+        // the GTID. This is done to address the issue of being unable to recover from a checkpoint in certain startup
+        // modes.
+        GtidSet gtidSet = GtidUtils.fixRestoredGtidSet(availableGtidSet, new GtidSet(gtidStr));
+        LOG.info("Merged GTID set is {}", gtidSet);
+
         if (gtidSet.isContainedWithin(availableGtidSet)) {
             LOG.info(
                     "MySQL current GTID set {} does contain the GTID set {} required by the connector.",

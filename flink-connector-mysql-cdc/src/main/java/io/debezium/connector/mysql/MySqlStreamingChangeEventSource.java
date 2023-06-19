@@ -84,13 +84,12 @@ import java.util.function.Predicate;
 import static io.debezium.util.Strings.isNullOrEmpty;
 
 /**
- * Copied from Debezium project to fix
- * https://github.com/ververica/flink-cdc-connectors/issues/1944.
- *
- * <p>Line 1485 : Add more error details for some exceptions.
+ * Copied from Debezium project to fix https://github.com/ververica/flink-cdc-connectors/issues/1944.
  *
  * <p>Line 1427-1433 : Adjust GTID merging logic to support recovering from job which previously
  * specifying starting offset on start.
+ *
+ * <p>Line 1485 : Add more error details for some exceptions.
  */
 public class MySqlStreamingChangeEventSource
         implements StreamingChangeEventSource<MySqlPartition, MySqlOffsetContext> {
